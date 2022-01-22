@@ -15,6 +15,32 @@ import matplotlib.pyplot as plt
 
 #FUNCTION to request data on the current USD rate
 
+def news():
+
+  layout_news_view = [[sg.Text('TODAY is ' + str(today.strftime("%d/%m/%Y")))]]
+
+  window_NEWS_view = sg.Window('NEWS', layout_news_view, finalize = True)
+
+
+
+  while True:
+
+    event_NEWS_view, values_NEWS_view = window_NEWS_view.read()
+    
+    print(event_NEWS_view, values_NEWS_view)
+    
+    if event_NEWS_view == sg.WIN_CLOSED:
+
+       break
+
+    window_NEWS_view.close()
+
+  return
+
+# * * * * * * * * * * 
+
+#FUNCTION to request data on the current USD rate
+
 def USD_rate():
 
     #XML magic
@@ -740,7 +766,7 @@ layout_main = [[sg.Text('TODAY is ' + str(today.strftime("%d/%m/%Y")))],
               #[sg.Text('_'*120)],
                [sg.Text('RUSFAR (on'), sg.Text(str(get_RUSFAR()[1])), sg.Text('):'), sg.Text(get_RUSFAR()[0]), sg.Text('%'), sg.VerticalSeparator(pad=None),
                sg.Text('MIACR for ON loans on ' + str(get_MIACR()[0]) + ': ' + get_MIACR()[1] + '%')],
-               [sg.Button('OFZ market', key = '-MARKET-'), sg.Button('FUTURES rates', key = '-FUTURES-')],
+               [sg.Button('OFZ market', key = '-MARKET-'), sg.Button('FUTURES rates', key = '-FUTURES-'), sg.Button('News', key = '-NEWS-')],
 
           [sg.Table(values=get_bond_data(0, time_horizont, True, False), headings=headings, max_col_width=55,
                     background_color='light blue',
@@ -819,5 +845,9 @@ while True:
     if event == '-FUTURES-':
 
         FUTURES_view()
+
+    if event == '-NEWS-':
+
+        news()
     
 window_main.close()
