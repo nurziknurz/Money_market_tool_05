@@ -736,10 +736,10 @@ data = data_to_display
 headings = [' SECID ', ' SHORTNAME ', ' DaysTM ', ' Yield(Bid) ', 'Bid depth', ' Yield(Ask) ', 'Ask depth', 'Ask:Bid',' Yield MICEX ']
 
 # ------ Window Layout ------
-layout_main = [[sg.Text('TODAY is ' + str(today.strftime("%d/%m/%Y")))],  
-
-               [sg.Text('RUSFAR (on'), sg.Text(str(get_RUSFAR()[1])), sg.Text('):'), sg.Text(get_RUSFAR()[0]), sg.Text('%')],
-               [sg.Text('MIACR for ON loans on ' + str(get_MIACR()[0]) + ': ' + get_MIACR()[1] + '%')],
+layout_main = [[sg.Text('TODAY is ' + str(today.strftime("%d/%m/%Y")))],
+              #[sg.Text('_'*120)],
+               [sg.Text('RUSFAR (on'), sg.Text(str(get_RUSFAR()[1])), sg.Text('):'), sg.Text(get_RUSFAR()[0]), sg.Text('%'), sg.VerticalSeparator(pad=None),
+               sg.Text('MIACR for ON loans on ' + str(get_MIACR()[0]) + ': ' + get_MIACR()[1] + '%')],
                [sg.Button('OFZ market', key = '-MARKET-'), sg.Button('FUTURES rates', key = '-FUTURES-')],
 
           [sg.Table(values=get_bond_data(0, time_horizont, True, False), headings=headings, max_col_width=55,
@@ -747,7 +747,7 @@ layout_main = [[sg.Text('TODAY is ' + str(today.strftime("%d/%m/%Y")))],
                     auto_size_columns=True,
                     display_row_numbers=True,
                     justification='right',
-                    num_rows=6,
+                    num_rows=10,
                     alternating_row_color='lightyellow',
                     key='-TABLE-',
                     row_height=30,
@@ -756,9 +756,9 @@ layout_main = [[sg.Text('TODAY is ' + str(today.strftime("%d/%m/%Y")))],
           [sg.Button('All deals', key = '-REFRESH-'),
            sg.Button('Yield(Ask) > RUSFAR', key = '-ABOVE-'),
            sg.Button('Real deals', key = '-REAL-')],
-           [sg.Checkbox('Brokerage comission', enable_events=True, default = True, key = '-COMISSION-'), sg.Checkbox('VTBM discount on RUSFAR', enable_events=True, default = False, key = '-VTBM_DISCOUNT-')],
+           [sg.Checkbox('Brokerage comission', enable_events=True, default = True, key = '-COMISSION-'), sg.Checkbox('VTBM discount on RUSFAR', enable_events=True, default = False, key = '-VTBM_DISCOUNT-'),
 
-            [sg.Text('Investment horizont (in days): '), sg.InputText(time_horizont, key = '-HORIZONT-', size = (5,1))]]
+            sg.Text('Investment horizont (in days): '), sg.InputText(time_horizont, key = '-HORIZONT-', size = (5,1))]]
           
           
 # ------ Create Window ------
@@ -771,6 +771,10 @@ while True:
     event, values = window_main.read()
     
     print(event, values)
+
+    if event == '-TABLE-':
+
+      print(values['-TABLE-'])
     
     if event == sg.WIN_CLOSED:
 
