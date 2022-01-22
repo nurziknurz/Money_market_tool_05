@@ -6,6 +6,7 @@ import PySimpleGUI as sg
 import datetime
 import pandas as pd
 import matplotlib.pyplot as plt
+from bs4 import BeautifulSoup
 
 
 
@@ -17,11 +18,69 @@ import matplotlib.pyplot as plt
 
 def news():
 
-  layout_news_view = [[sg.Text('TODAY is ' + str(today.strftime("%d/%m/%Y")))]]
+  today = datetime.date.today().isoformat().replace("-", "")
+  
+  #Getting headlinew from RBC
+  
+  print('* '*10)
+
+  url='https://www.rbc.ru'
+  response = requests.get(url)
+
+  soup_rbc = BeautifulSoup(response.text, 'html.parser')
+
+  headlines_rbc = soup_rbc.find('body').find_all('span',  attrs={'class':'news-feed__item__title news-feed__item_in-main'})
+
+  #Extracting only texts of the headlines
+  
+  headlines_rbc_texts = ''
+
+  for x in headlines_rbc:
+
+    print(" ")
+
+    print(x.text.strip())
+
+    headlines_rbc_texts = headlines_rbc_texts + x.text.strip() +'\n\n'
+
+  #Getting data from YANDEX
+  print("")
+
+  print('-'*5)
+
+  print(" ")
+
+  url_yandex='https://newssearch.yandex.ru/news/search?text=%D0%9E%D0%A4%D0%97+date%3A' + str(int(today) - 1)
+  response_yandex = requests.get(url_yandex)
+
+  soup_yandex = BeautifulSoup(response_yandex.text, 'html.parser')
+
+  headlines_yandex = soup_yandex.find('body').find_all('span',  attrs={'role':'text'})
+
+  #Extracting only texts of the Yandex news
+  
+  headlines_yandex_texts = ''
+
+  for x in headlines_yandex:
+
+    print(" ")
+
+    print(x.text.strip())
+
+    headlines_yandex_texts = headlines_yandex_texts + x.text.strip() + '\n\n'
+  
+
+
+  #Creating a window to show texts of the news
+  
+  layout_news_view = [[sg.Text('RBC Top News:', pad = (20,0))],
+                      [sg.Text(headlines_rbc_texts)],
+                      [sg.Text('Bond Market News:', pad = (20,0))],
+                      [sg.Text(headlines_yandex_texts, size = (100, 260))]]
 
   window_NEWS_view = sg.Window('NEWS', layout_news_view, finalize = True)
 
-
+  #Running a cycle for the news window
 
   while True:
 
