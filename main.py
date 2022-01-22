@@ -14,87 +14,173 @@ from bs4 import BeautifulSoup
 
 # * * * * * * * * * * 
 
-#FUNCTION to request data on the current USD rate
+#FUNCTION to display RUSFAR Dynamics
 
-def news():
+def RUSFAR_dynamics():
 
-  today = datetime.date.today().isoformat().replace("-", "")
+  today = datetime.date.today()
+
+  print(today)
+
+  #XML magic
+  URL_RUSFAR_dynamics = 'http://iss.moex.com/iss/history/engines/stock/markets/index/securities/rusfar.xml?from=2022-01-01&till=' + str(today)
+
+  response_RUSFAR_dynamics = requests.get(URL_RUSFAR_dynamics)
+
+  with open('RUSFAR_dynamics.xml', 'wb') as RUSFAR_dynamics_file:
+
+    RUSFAR_dynamics_file.write(response_RUSFAR_dynamics.content)
+
+  RUSFAR_dynamics_file.close
+
+  tree_RUSFAR_dynamics = ET.parse('RUSFAR_dynamics.xml')
+
+  root_RUSFAR_dynamics = tree_RUSFAR_dynamics.getroot()
+
+  print(root_RUSFAR_dynamics)
+
+  RUSFAR_dynamics_history = root_RUSFAR_dynamics[0]
+
+  print(RUSFAR_dynamics_history[0].attrib)
+
+  RUSFAR_dynamics_history_rows = RUSFAR_dynamics_history[1]
+
+  #Extracting particular RUSFAR data
+
+  to_display_RUSFAR_dates = []
+
+  to_display_RUSFAR_values = []
+
+  to_display_datecounter = []
+
+  datecounter = 0
+
+  for row in RUSFAR_dynamics_history_rows:
+
+    to_display_RUSFAR_values.append(float(row.attrib['CLOSE']))
+
+    to_display_RUSFAR_dates.append(row.attrib['TRADEDATE'])
+
+    datecounter = datecounter + 1
+
+    to_display_datecounter.append(datecounter)
+
+
   
-  #Getting headlinew from RBC
-  
-  print('* '*10)
+  RUSFAR_to_plot = pd.DataFrame()
 
-  url='https://www.rbc.ru'
-  response = requests.get(url)
+  RUSFAR_to_plot['Daycounter'] = to_display_datecounter
 
-  soup_rbc = BeautifulSoup(response.text, 'html.parser')
+  RUSFAR_to_plot['Dates'] = to_display_RUSFAR_dates
 
-  headlines_rbc = soup_rbc.find('body').find_all('span',  attrs={'class':'news-feed__item__title news-feed__item_in-main'})
+  RUSFAR_to_plot['Values'] = to_display_RUSFAR_values
 
-  #Extracting only texts of the headlines
-  
-  headlines_rbc_texts = ''
-
-  for x in headlines_rbc:
-
-    print(" ")
-
-    print(x.text.strip())
-
-    headlines_rbc_texts = headlines_rbc_texts + x.text.strip() +'\n\n'
-
-  #Getting data from YANDEX
-  print("")
-
-  print('-'*5)
-
-  print(" ")
-
-  url_yandex='https://newssearch.yandex.ru/news/search?text=%D0%9E%D0%A4%D0%97+date%3A' + str(int(today) - 1)
-  response_yandex = requests.get(url_yandex)
-
-  soup_yandex = BeautifulSoup(response_yandex.text, 'html.parser')
-
-  headlines_yandex = soup_yandex.find('body').find_all('span',  attrs={'role':'text'})
-
-  #Extracting only texts of the Yandex news
-  
-  headlines_yandex_texts = ''
-
-  for x in headlines_yandex:
-
-    print(" ")
-
-    print(x.text.strip())
-
-    headlines_yandex_texts = headlines_yandex_texts + x.text.strip() + '\n\n'
-  
-
-
-  #Creating a window to show texts of the news
-  
-  layout_news_view = [[sg.Text('RBC Top News:', pad = (20,0))],
-                      [sg.Text(headlines_rbc_texts)],
-                      [sg.Text('Bond Market News:', pad = (20,0))],
-                      [sg.Text(headlines_yandex_texts, size = (100, 260))]]
-
-  window_NEWS_view = sg.Window('NEWS', layout_news_view, finalize = True)
-
-  #Running a cycle for the news window
-
-  while True:
-
-    event_NEWS_view, values_NEWS_view = window_NEWS_view.read()
+  #RUSFAR_to_plot = RUSFAR_to_plot.sort_values(by=['Daycounter'])
     
-    print(event_NEWS_view, values_NEWS_view)
-    
-    if event_NEWS_view == sg.WIN_CLOSED:
+  xData = RUSFAR_to_plot['Daycounter'].tolist()
 
-       break
+  yData = RUSFAR_to_plot['Values'].tolist()
 
-    window_NEWS_view.close()
+  plt.scatter(xData, yData)
+
+  plt.plot(xData, yData)
+
+  plt.title("RUSFAR dynamics ending on " + str(today.strftime("%d/%m/%Y")))
+
+  plt.xlabel("Days")
+
+  plt.ylabel("RUSFAR (%)")
+
+  plt.grid(axis = 'both')
+
+  plt.show()
 
   return
+
+
+# * * * * * * * * * * 
+
+#FUNCTION to request news from RBC and YANDEX 
+
+def news():
+  
+    today = datetime.date.today().isoformat().replace("-", "")
+    
+    #Getting headlinew from RBC
+    
+    print('* '*10)
+
+    url='https://www.rbc.ru'
+    response = requests.get(url)
+
+    soup_rbc = BeautifulSoup(response.text, 'html.parser')
+
+    headlines_rbc = soup_rbc.find('body').find_all('span',  attrs={'class':'news-feed__item__title news-feed__item_in-main'})
+
+    #Extracting only texts of the headlines
+    
+    headlines_rbc_texts = ''
+
+    for x in headlines_rbc:
+
+      print(" ")
+
+      print(x.text.strip())
+
+      headlines_rbc_texts = headlines_rbc_texts + x.text.strip() +'\n\n'
+
+    #Getting data from YANDEX
+    print("")
+
+    print('-'*5)
+
+    print(" ")
+
+    url_yandex='https://newssearch.yandex.ru/news/search?text=%D0%9E%D0%A4%D0%97+date%3A' + today
+    response_yandex = requests.get(url_yandex)
+
+    soup_yandex = BeautifulSoup(response_yandex.text, 'html.parser')
+
+    headlines_yandex = soup_yandex.find('body').find_all('span',  attrs={'role':'text'})
+
+    #Extracting only texts of the Yandex news
+    
+    headlines_yandex_texts = ''
+
+    for x in headlines_yandex:
+
+      print(" ")
+
+      print(x.text.strip())
+
+      headlines_yandex_texts = headlines_yandex_texts + x.text.strip() + '\n\n'
+    
+
+
+    #Creating a window to show texts of the news
+    
+    layout_news_view = [[sg.Text('RBC Top News:', pad = (20,0))],
+                        [sg.Text(headlines_rbc_texts)],
+                        [sg.Text('Bond Market News:', pad = (20,0))],
+                        [sg.Multiline(headlines_yandex_texts, size = (80,10),do_not_clear = True)]]
+
+    window_NEWS_view = sg.Window('NEWS', layout_news_view, finalize = True)
+
+    #Running a cycle for the news window
+
+    while True:
+
+      event_NEWS_view, values_NEWS_view = window_NEWS_view.read()
+      
+      print(event_NEWS_view, values_NEWS_view)
+      
+      if event_NEWS_view == sg.WIN_CLOSED:
+
+        break
+
+      window_NEWS_view.close()
+
+    return
 
 # * * * * * * * * * * 
 
@@ -252,17 +338,12 @@ def FUTURES_view():
         FUTURES_YIELD.append("{:.2%}".format(FUTURES['Yield'].tolist()[i_counter]**(365/float(FUTURES['Days to expiration'].tolist()[i_counter]))-1))
 
     FUTURES['Yield'] = FUTURES_YIELD
-                        
-        
-
 
     #Forming the data for printing
 
     FUTURES = FUTURES.sort_values(by=['Last date'])
 
     FUTURES_to_list = FUTURES.values.tolist()
-
-
 
     layout_FORWARDS_view = [[sg.Text('TODAY is ' + str(today.strftime("%d/%m/%Y")))],
                             [sg.Table(values = FUTURES_to_list, headings=['SECID', 'Futures', 'Last date', 'Days to expiration','Last price', 'Yield'], max_col_width=85,
@@ -278,8 +359,6 @@ def FUTURES_view():
                     tooltip='MICEX data')]]
 
     window_FORWARDS_view = sg.Window('FORWARD rates', layout_FORWARDS_view, finalize = True)
-
-
 
     while True:
 
@@ -594,15 +673,6 @@ def OFZ_view():
 
     today = date.today()
 
-    #print(' ')
-
-    #print("***")
-
-    #print(today)
-
-    #print(today.strftime("%d/%m/%Y"))
-
-
     #Getting fresh OFZ data from MICEX
 
     URL = "https://iss.moex.com/iss/engines/stock/markets/bonds/boards/TQOB/securities.xml"
@@ -829,7 +899,7 @@ layout_main = [[sg.Text('TODAY is ' + str(today.strftime("%d/%m/%Y")))],
               #[sg.Text('_'*120)],
                [sg.Text('RUSFAR (on'), sg.Text(str(get_RUSFAR()[1])), sg.Text('):'), sg.Text(get_RUSFAR()[0]), sg.Text('%'), sg.VerticalSeparator(pad=None),
                sg.Text('MIACR for ON loans on ' + str(get_MIACR()[0]) + ': ' + get_MIACR()[1] + '%')],
-               [sg.Button('OFZ market', key = '-MARKET-'), sg.Button('FUTURES rates', key = '-FUTURES-'), sg.Button('News', key = '-NEWS-')],
+               [sg.Button('OFZ market', key = '-MARKET-'), sg.Button('FUTURES rates', key = '-FUTURES-'), sg.Button('RUSFAR Dynamics', key = '-RUSFAR_DYNAMICS-'), sg.Button('News', key = '-NEWS-')],
 
           [sg.Table(values=get_bond_data(0, time_horizont, True, False), headings=headings, max_col_width=55,
                     background_color='light blue',
@@ -851,7 +921,7 @@ layout_main = [[sg.Text('TODAY is ' + str(today.strftime("%d/%m/%Y")))],
           
           
 # ------ Create Window ------
-window_main = sg.Window('Money market management toolkit v.0.5', layout_main, finalize = True)
+window_main = sg.Window('Money market management toolkit v.0.6', layout_main, finalize = True)
 
 #PART 3. RUSSING MAIN CYCLE WITH THE GUI
 
@@ -867,50 +937,54 @@ while True:
     
     if event == sg.WIN_CLOSED:
 
-        break
+      break
 
     if event == '-REFRESH-':
 
-        if int(values['-HORIZONT-']) > 184 or int(values['-HORIZONT-']) < 1:
+      if int(values['-HORIZONT-']) > 184 or int(values['-HORIZONT-']) < 1:
 
-            sg.Popup('The horizont should be in range of 1..184 days')
+        sg.Popup('The horizont should be in range of 1..184 days')
 
-        else:           
+      else:           
 
-            window_main.Element('-TABLE-').Update(values = get_bond_data(0, values['-HORIZONT-'], values['-COMISSION-'], values['-VTBM_DISCOUNT-'])) 
+        window_main.Element('-TABLE-').Update(values = get_bond_data(0, values['-HORIZONT-'], values['-COMISSION-'], values['-VTBM_DISCOUNT-'])) 
        
 
     if event == '-ABOVE-':
 
-        if int(values['-HORIZONT-']) > 184 or int(values['-HORIZONT-']) < 1:
+      if int(values['-HORIZONT-']) > 184 or int(values['-HORIZONT-']) < 1:
 
-            sg.Popup('The horizont should be in the range of 1..184 days')
+        sg.Popup('The horizont should be in the range of 1..184 days')
 
-        else:
+      else:
 
-            window_main.Element('-TABLE-').Update(values = get_bond_data(1, values['-HORIZONT-'], values['-COMISSION-'],  values['-VTBM_DISCOUNT-']))
+        window_main.Element('-TABLE-').Update(values = get_bond_data(1, values['-HORIZONT-'], values['-COMISSION-'],  values['-VTBM_DISCOUNT-']))
 
     if event == '-REAL-':
 
-        if int(values['-HORIZONT-']) > 184 or int(values['-HORIZONT-']) < 1:
+      if int(values['-HORIZONT-']) > 184 or int(values['-HORIZONT-']) < 1:
 
-            sg.Popup('The horizont should be in the range of 1..184 days')
+        sg.Popup('The horizont should be in the range of 1..184 days')
 
-        else:
+      else:
 
-            window_main.Element('-TABLE-').Update(values = get_bond_data(2, values['-HORIZONT-'], values['-COMISSION-'],  values['-VTBM_DISCOUNT-']))      
+        window_main.Element('-TABLE-').Update(values = get_bond_data(2, values['-HORIZONT-'], values['-COMISSION-'],  values['-VTBM_DISCOUNT-']))      
 
     if event == '-MARKET-':
 
-        OFZ_view()
+      OFZ_view()
 
 
     if event == '-FUTURES-':
 
-        FUTURES_view()
+      FUTURES_view()
 
     if event == '-NEWS-':
 
-        news()
+      news()
+
+    if event == '-RUSFAR_DYNAMICS-':
+
+      RUSFAR_dynamics()
     
 window_main.close()

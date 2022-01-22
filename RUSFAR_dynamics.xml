@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+<data id="history">
+<metadata>
+<columns>
+<column name="BOARDID" type="string" bytes="12" max_size="0" />
+<column name="SECID" type="string" bytes="36" max_size="0" />
+<column name="TRADEDATE" type="date" bytes="10" max_size="0" />
+<column name="SHORTNAME" type="string" bytes="189" max_size="0" />
+<column name="NAME" type="string" bytes="765" max_size="0" />
+<column name="CLOSE" type="double" />
+<column name="OPEN" type="double" />
+<column name="HIGH" type="double" />
+<column name="LOW" type="double" />
+<column name="VALUE" type="double" />
+<column name="DURATION" type="int32" />
+<column name="YIELD" type="double" />
+<column name="DECIMALS" type="int32" />
+<column name="CAPITALIZATION" type="double" />
+<column name="CURRENCYID" type="string" bytes="9" max_size="0" />
+<column name="DIVISOR" type="double" />
+<column name="TRADINGSESSION" type="string" bytes="3" max_size="0" />
+<column name="VOLUME" type="double" />
+</columns>
+</metadata>
+<rows>
+<row BOARDID="MMIX" SECID="RUSFAR" TRADEDATE="2022-01-10" SHORTNAME="RUSFAR" NAME="Russian Secured Funding Average Rate ON" CLOSE="8.41" OPEN="8.41" HIGH="8.41" LOW="8.41" VALUE="48441479000" DURATION="" YIELD="" DECIMALS="2" CAPITALIZATION="" CURRENCYID="RUB" DIVISOR="" TRADINGSESSION="3" VOLUME="" />
+<row BOARDID="MMIX" SECID="RUSFAR" TRADEDATE="2022-01-11" SHORTNAME="RUSFAR" NAME="Russian Secured Funding Average Rate ON" CLOSE="8.28" OPEN="8.28" HIGH="8.28" LOW="8.28" VALUE="97113019000" DURATION="" YIELD="" DECIMALS="2" CAPITALIZATION="" CURRENCYID="RUB" DIVISOR="" TRADINGSESSION="3" VOLUME="" />
+<row BOARDID="MMIX" SECID="RUSFAR" TRADEDATE="2022-01-12" SHORTNAME="RUSFAR" NAME="Russian Secured Funding Average Rate ON" CLOSE="8.31" OPEN="8.31" HIGH="8.31" LOW="8.31" VALUE="108225479000" DURATION="" YIELD="" DECIMALS="2" CAPITALIZATION="" CURRENCYID="RUB" DIVISOR="" TRADINGSESSION="3" VOLUME="" />
+<row BOARDID="MMIX" SECID="RUSFAR" TRADEDATE="2022-01-13" SHORTNAME="RUSFAR" NAME="Russian Secured Funding Average Rate ON" CLOSE="8.14" OPEN="8.14" HIGH="8.14" LOW="8.14" VALUE="71013482000" DURATION="" YIELD="" DECIMALS="2" CAPITALIZATION="" CURRENCYID="RUB" DIVISOR="" TRADINGSESSION="3" VOLUME="" />
+<row BOARDID="MMIX" SECID="RUSFAR" TRADEDATE="2022-01-14" SHORTNAME="RUSFAR" NAME="Russian Secured Funding Average Rate ON" CLOSE="8.19" OPEN="8.19" HIGH="8.19" LOW="8.19" VALUE="108629261000" DURATION="" YIELD="" DECIMALS="2" CAPITALIZATION="" CURRENCYID="RUB" DIVISOR="" TRADINGSESSION="3" VOLUME="" />
+<row BOARDID="MMIX" SECID="RUSFAR" TRADEDATE="2022-01-17" SHORTNAME="RUSFAR" NAME="Russian Secured Funding Average Rate ON" CLOSE="8.31" OPEN="8.31" HIGH="8.31" LOW="8.31" VALUE="107945860000" DURATION="" YIELD="" DECIMALS="2" CAPITALIZATION="" CURRENCYID="RUB" DIVISOR="" TRADINGSESSION="3" VOLUME="" />
+<row BOARDID="MMIX" SECID="RUSFAR" TRADEDATE="2022-01-18" SHORTNAME="RUSFAR" NAME="Russian Secured Funding Average Rate ON" CLOSE="8.37" OPEN="8.37" HIGH="8.37" LOW="8.37" VALUE="195957241000" DURATION="" YIELD="" DECIMALS="2" CAPITALIZATION="" CURRENCYID="RUB" DIVISOR="" TRADINGSESSION="3" VOLUME="" />
+<row BOARDID="MMIX" SECID="RUSFAR" TRADEDATE="2022-01-19" SHORTNAME="RUSFAR" NAME="Russian Secured Funding Average Rate ON" CLOSE="8.44" OPEN="8.44" HIGH="8.44" LOW="8.44" VALUE="130884153000" DURATION="" YIELD="" DECIMALS="2" CAPITALIZATION="" CURRENCYID="RUB" DIVISOR="" TRADINGSESSION="3" VOLUME="" />
+<row BOARDID="MMIX" SECID="RUSFAR" TRADEDATE="2022-01-20" SHORTNAME="RUSFAR" NAME="Russian Secured Funding Average Rate ON" CLOSE="8.45" OPEN="8.45" HIGH="8.45" LOW="8.45" VALUE="56556519000" DURATION="" YIELD="" DECIMALS="2" CAPITALIZATION="" CURRENCYID="RUB" DIVISOR="" TRADINGSESSION="3" VOLUME="" />
+<row BOARDID="MMIX" SECID="RUSFAR" TRADEDATE="2022-01-21" SHORTNAME="RUSFAR" NAME="Russian Secured Funding Average Rate ON" CLOSE="8.51" OPEN="8.51" HIGH="8.51" LOW="8.51" VALUE="116860118000" DURATION="" YIELD="" DECIMALS="2" CAPITALIZATION="" CURRENCYID="RUB" DIVISOR="" TRADINGSESSION="3" VOLUME="" />
+</rows>
+</data>
+<data id="history.cursor">
+<metadata>
+<columns>
+<column name="INDEX" type="int64" />
+<column name="TOTAL" type="int64" />
+<column name="PAGESIZE" type="int64" />
+</columns>
+</metadata>
+<rows>
+<row INDEX="0" TOTAL="10" PAGESIZE="100" />
+</rows>
+</data>
+</document>
