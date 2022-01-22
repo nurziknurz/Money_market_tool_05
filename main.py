@@ -594,13 +594,13 @@ def OFZ_view():
 
     today = date.today()
 
-    print(' ')
+    #print(' ')
 
-    print("***")
+    #print("***")
 
-    print(today)
+    #print(today)
 
-    print(today.strftime("%d/%m/%Y"))
+    #print(today.strftime("%d/%m/%Y"))
 
 
     #Getting fresh OFZ data from MICEX
@@ -624,14 +624,16 @@ def OFZ_view():
 
     data_securities = root[0]
 
+    data_marketdata = root[1]
+
    
     print('***')
 
     rows_data_securities = data_securities[1]
 
-    print(rows_data_securities)
+    #print(rows_data_securities)
 
-    print(rows_data_securities[0].attrib)
+    #print(rows_data_securities[0].attrib)
     
 
     #Getting data on particular OFZ
@@ -681,7 +683,9 @@ def OFZ_view():
 
         days_to_maturity = (parser.parse(to_load_maturity) - today).days
 
-        to_load_yield = row.attrib["YIELDATPREVWAPRICE"]
+        search_results_yield = data_marketdata.findall(".//*[@SECID='" + to_load_secid + "']")
+
+        to_load_yield = search_results_yield[0].attrib["YIELD"]
 
         SECIDS.append(to_load_secid)
 
